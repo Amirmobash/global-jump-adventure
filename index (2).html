@@ -1,0 +1,2294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Trump's Global Jump - iPhone Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Press Start 2P', 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 5vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            overflow: hidden;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(230, 57, 70, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(29, 53, 87, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(241, 250, 238, 0.05) 0%, transparent 30%);
+            z-index: -1;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            background: #0c1b33;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 
+                        0 0 0 8px #e63946, 
+                        0 0 0 12px #f1faee;
+            overflow: hidden;
+            margin: 10px auto;
+        }
+        
+        header {
+            background: linear-gradient(to right, #1d3557, #e63946);
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border-bottom: 4px solid #f1faee;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 180px;
+        }
+        
+        .logo h1 {
+            color: #f1faee;
+            font-size: 1rem;
+            text-shadow: 2px 2px 0 #1d3557;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+        
+        .logo span {
+            background: #e63946;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            white-space: nowrap;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        
+        .stat-box {
+            background: rgba(241, 250, 238, 0.9);
+            border-radius: 6px;
+            padding: 5px 8px;
+            text-align: center;
+            min-width: 65px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            flex: 1;
+        }
+        
+        .stat-box h3 {
+            font-size: 0.5rem;
+            color: #1d3557;
+            margin-bottom: 3px;
+        }
+        
+        .stat-box .value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #e63946;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-area {
+            position: relative;
+            height: 60vh;
+            min-height: 400px;
+            background: linear-gradient(to bottom, #457b9d, #a8dadc);
+            overflow: hidden;
+        }
+        
+        #game-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .country-flag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(29, 53, 87, 0.9);
+            border-radius: 8px;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 3px solid #e63946;
+            z-index: 50;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .country-flag span {
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+        
+        .flag-box {
+            width: 32px;
+            height: 20px;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .trump-message {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(29, 53, 87, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            border: 3px solid #e63946;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 90%;
+            z-index: 20;
+            display: none;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(230, 57, 70, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
+        }
+        
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(13, 27, 42, 0.95);
+            z-index: 100;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .screen h2 {
+            color: #f1faee;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px #e63946;
+            animation: textGlow 2s infinite alternate;
+        }
+        
+        @keyframes textGlow {
+            from { text-shadow: 0 0 10px #e63946; }
+            to { text-shadow: 0 0 20px #ff9e9e, 0 0 30px #e63946; }
+        }
+        
+        .screen p {
+            color: #a8dadc;
+            font-size: 0.9rem;
+            max-width: 500px;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            background: linear-gradient(to bottom, #e63946, #b21f1f);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.3), 
+                0 0 0 3px #f1faee;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(25deg);
+            transition: all 0.5s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.4), 
+                0 0 0 3px #f1faee;
+        }
+        
+        .btn:hover::after {
+            left: 120%;
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 
+                0 3px 10px rgba(0, 0, 0, 0.3), 
+                0 0 0 3px #f1faee;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .game-over-stats {
+            background: rgba(241, 250, 238, 0.1);
+            border-radius: 10px;
+            padding: 12px;
+            margin: 12px 0;
+            border: 2px solid #e63946;
+            backdrop-filter: blur(5px);
+        }
+        
+        .game-over-stats p {
+            font-size: 0.9rem;
+            margin: 6px 0;
+            color: #f1faee;
+        }
+        
+        .game-over-stats span {
+            color: #e63946;
+            font-weight: bold;
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .trump-quote {
+            font-style: italic;
+            color: #a8dadc;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            max-width: 450px;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+            border-left: 3px solid #e63946;
+            padding-left: 10px;
+        }
+        
+        /* Mobile Controls */
+        .mobile-controls {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            z-index: 30;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .controller-frame {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .d-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 5px;
+            width: 120px;
+            height: 120px;
+            background: #444;
+            border-radius: 50%;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.5);
+            border: 4px solid #222;
+        }
+        
+        .d-pad-btn {
+            background: #333;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.5);
+            border: 2px solid #555;
+            user-select: none;
+            transition: all 0.1s;
+        }
+        
+        .d-pad-btn:active {
+            transform: translateY(4px);
+            box-shadow: inset 0 0 0 rgba(0,0,0,0.5);
+            background: #444;
+        }
+        
+        .d-pad-center {
+            grid-column: 2;
+            grid-row: 2;
+            background: #222;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+        
+        .d-pad-up {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .d-pad-left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        
+        .d-pad-right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        
+        .d-pad-down {
+            grid-column: 2;
+            grid-row: 3;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ff6666, #cc0000);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 
+                0 8px 0 #990000,
+                inset 0 -4px 10px rgba(0,0,0,0.4),
+                inset 0 4px 10px rgba(255,255,255,0.4);
+            border: 4px solid #990000;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+            transition: all 0.1s;
+        }
+        
+        .action-btn:active {
+            transform: translateY(8px);
+            box-shadow: 
+                0 0 0 #990000,
+                inset 0 -4px 10px rgba(0,0,0,0.4),
+                inset 0 4px 10px rgba(255,255,255,0.4);
+            background: linear-gradient(145deg, #cc0000, #ff6666);
+        }
+        
+        .action-btn span {
+            position: relative;
+            z-index: 2;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+        }
+        
+        .mobile-only {
+            display: none;
+        }
+        
+        /* Countdown */
+        #countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 0 10px #e63946, 0 0 20px #e63946;
+            z-index: 110;
+            display: none;
+            animation: pulseText 0.5s infinite alternate;
+        }
+        
+        @keyframes pulseText {
+            from { transform: translate(-50%, -50%) scale(1); }
+            to { transform: translate(-50%, -50%) scale(1.2); }
+        }
+        
+        /* Tutorial Messages */
+        .tutorial-message {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(29, 53, 87, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            border: 3px solid #f1faee;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 90%;
+            z-index: 20;
+            display: none;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(-50%, -10px); }
+            50% { transform: translate(-50%, 10px); }
+            100% { transform: translate(-50%, -10px); }
+        }
+        
+        /* Game Over Animation */
+        .splash-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(30, 144, 255, 0.8) 0%, transparent 70%);
+            z-index: 90;
+            display: none;
+            pointer-events: none;
+        }
+        
+        /* Screen Shake */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+        
+        /* Energy Bar */
+        .energy-container {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 150px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            border: 2px solid #f1faee;
+            z-index: 50;
+            overflow: hidden;
+        }
+        
+        .energy-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to right, #e63946, #ff9e00, #a8dadc);
+            border-radius: 8px;
+            transition: width 0.3s;
+        }
+        
+        .energy-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 0.7rem;
+            text-shadow: 1px 1px 1px black;
+        }
+        
+        /* World Map */
+        .world-map {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 120px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #1d3557;
+            border-radius: 5px;
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .world-map span {
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #1d3557;
+        }
+        
+        /* Power-ups */
+        .power-up {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            z-index: 40;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+        }
+        
+        /* Mode Selector */
+        .mode-selector {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .mode-btn {
+            background: linear-gradient(to bottom, #1d3557, #457b9d);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(to bottom, #e63946, #b21f1f);
+            box-shadow: 0 0 10px #e63946;
+        }
+        
+        /* Breaking News Container */
+        .breaking-news {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background: rgba(230, 57, 70, 0.9);
+            color: white;
+            padding: 8px 0;
+            font-weight: bold;
+            text-align: center;
+            z-index: 60;
+            display: none;
+            border-bottom: 3px solid #f1faee;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        
+        .breaking-news-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            animation: scrollNews 20s linear infinite;
+        }
+        
+        .breaking-label {
+            background: #1d3557;
+            padding: 4px 10px;
+            margin-right: 15px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+        }
+        
+        @keyframes scrollNews {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        /* iPhone-specific optimizations */
+        @media (max-width: 768px) {
+            .game-container {
+                max-width: 95%;
+                border-radius: 10px;
+            }
+            
+            header {
+                padding: 8px 10px;
+            }
+            
+            .logo h1 {
+                font-size: 0.9rem;
+            }
+            
+            .logo span {
+                font-size: 0.5rem;
+            }
+            
+            .stat-box {
+                padding: 4px 6px;
+                min-width: 55px;
+            }
+            
+            .stat-box h3 {
+                font-size: 0.45rem;
+            }
+            
+            .stat-box .value {
+                font-size: 0.85rem;
+            }
+            
+            .game-area {
+                height: 65vh;
+                min-height: 350px;
+            }
+            
+            .screen h2 {
+                font-size: 1.5rem;
+            }
+            
+            .screen p {
+                font-size: 0.8rem;
+            }
+            
+            .btn {
+                padding: 8px 25px;
+                font-size: 0.8rem;
+            }
+            
+            .country-flag {
+                top: 10px;
+                right: 10px;
+                padding: 5px 8px;
+                font-size: 0.8rem;
+            }
+            
+            .country-flag span {
+                font-size: 0.8rem;
+            }
+            
+            .flag-box {
+                width: 28px;
+                height: 16px;
+            }
+            
+            .d-pad {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .action-btn {
+                width: 70px;
+                height: 70px;
+                font-size: 1.2rem;
+            }
+            
+            .world-map {
+                width: 100px;
+                height: 50px;
+            }
+            
+            .breaking-news {
+                top: 60px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .desktop-only {
+                display: none;
+            }
+            
+            .mobile-only {
+                display: block;
+            }
+            
+            .logo h1 {
+                font-size: 0.8rem;
+            }
+            
+            .stats {
+                gap: 4px;
+            }
+            
+            .stat-box {
+                min-width: 50px;
+                padding: 3px;
+            }
+            
+            .screen h2 {
+                font-size: 1.3rem;
+            }
+            
+            .game-over-stats p {
+                font-size: 0.8rem;
+            }
+            
+            #countdown {
+                font-size: 3rem;
+            }
+            
+            .game-area {
+                height: 70vh;
+                min-height: 300px;
+            }
+            
+            .d-pad {
+                width: 90px;
+                height: 90px;
+                padding: 10px;
+            }
+            
+            .action-btn {
+                width: 65px;
+                height: 65px;
+                font-size: 1.1rem;
+            }
+            
+            .energy-container {
+                width: 120px;
+                height: 18px;
+            }
+            
+            .world-map {
+                width: 80px;
+                height: 40px;
+                font-size: 0.6rem;
+            }
+            
+            .breaking-news {
+                font-size: 0.7rem;
+                padding: 6px 0;
+            }
+            
+            .breaking-label {
+                padding: 3px 8px;
+                font-size: 0.6rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo {
+                min-width: 160px;
+            }
+            
+            .logo h1 {
+                font-size: 0.7rem;
+            }
+            
+            .stat-box {
+                min-width: 45px;
+            }
+            
+            .stat-box h3 {
+                font-size: 0.4rem;
+            }
+            
+            .stat-box .value {
+                font-size: 0.8rem;
+            }
+            
+            .game-area {
+                height: 75vh;
+                min-height: 250px;
+            }
+            
+            .d-pad {
+                width: 80px;
+                height: 80px;
+                padding: 8px;
+            }
+            
+            .action-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1rem;
+            }
+            
+            .screen h2 {
+                font-size: 1.1rem;
+            }
+            
+            .screen p {
+                font-size: 0.7rem;
+            }
+            
+            .btn {
+                padding: 7px 20px;
+                font-size: 0.7rem;
+            }
+            
+            .trump-quote {
+                font-size: 0.7rem;
+            }
+            
+            .energy-container {
+                width: 100px;
+                height: 16px;
+            }
+            
+            .world-map {
+                width: 70px;
+                height: 35px;
+                font-size: 0.5rem;
+            }
+            
+            .breaking-news {
+                font-size: 0.65rem;
+                padding: 5px 0;
+            }
+        }
+        
+        @media (max-width: 375px) {
+            .game-area {
+                height: 75vh;
+                min-height: 200px;
+            }
+            
+            .d-pad {
+                width: 70px;
+                height: 70px;
+                padding: 7px;
+            }
+            
+            .action-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 0.9rem;
+            }
+            
+            .btn {
+                padding: 6px 18px;
+                font-size: 0.65rem;
+            }
+            
+            .screen h2 {
+                font-size: 1.0rem;
+            }
+            
+            .screen p {
+                font-size: 0.65rem;
+            }
+            
+            .trump-quote {
+                font-size: 0.65rem;
+            }
+        }
+        
+        /* iPhone notch area padding */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(10px, env(safe-area-inset-left));
+                padding-right: max(10px, env(safe-area-inset-right));
+                padding-bottom: max(10px, env(safe-area-inset-bottom));
+            }
+            
+            .mobile-controls {
+                padding-bottom: max(15px, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="game-container">
+        <header>
+            <div class="logo">
+                <h1>TRUMP'S GLOBAL JUMP <span>IPHONE EDITION</span></h1>
+            </div>
+            <div class="stats">
+                <div class="stat-box">
+                    <h3>SCORE</h3>
+                    <div class="value" id="score">0</div>
+                </div>
+                <div class="stat-box">
+                    <h3>COUNTRIES</h3>
+                    <div class="value" id="countries">0</div>
+                </div>
+                <div class="stat-box">
+                    <h3>LEVEL</h3>
+                    <div class="value" id="level">1</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="game-area">
+            <canvas id="game-canvas"></canvas>
+            
+            <!-- Breaking News Banner -->
+            <div class="breaking-news" id="breaking-news">
+                <div class="breaking-news-content">
+                    <div class="breaking-label">Breaking News</div>
+                    <div id="news-content">Trump arrives in USA - 'We're going to have so much winning!'</div>
+                </div>
+            </div>
+            
+            <div id="countdown">3</div>
+            
+            <div class="tutorial-message" id="tutorial-desktop">Use ARROW KEYS to move and SPACEBAR to jump!</div>
+            <div class="tutorial-message" id="tutorial-mobile">Tap A to JUMP! Use D-PAD to move!</div>
+            
+            <div class="splash-effect" id="splash-effect"></div>
+            
+            <div class="country-flag">
+                <span>USA</span>
+                <div class="flag-box" id="current-flag"></div>
+            </div>
+            
+            <div class="energy-container">
+                <div class="energy-bar" id="energy-bar"></div>
+                <div class="energy-label">ENERGY: <span id="energy-value">100</span>%</div>
+            </div>
+            
+            <div class="world-map">
+                <span>WORLD MAP</span>
+            </div>
+            
+            <div class="trunmp-message" id="message">Let's make platforming great again!</div>
+            
+            <div class="screen" id="start-screen">
+                <h2>TRonP'S GLOBAL JUMP</h2>
+                <p>Help President Tronmp jump between countries in this nostalgic platformer! Avoid falling into international waters and visit as many countries as possible.</p>
+                
+                <div class="mode-selector">
+                    <button class="mode-btn active" id="endless-mode">ENDLESS MODE</button>
+                    <button class="mode-btn" id="time-attack">TIME ATTACK</button>
+                </div>
+                
+                <div class="game-over-stats">
+                    <p class="mobile-only">Use on-screen controls to move and jump</p>
+                    <p>Collect points for each new country visited!</p>
+                    <p>This game is a fictional parody. All characters are fictional and not associated with any real person</p>
+                </div>
+                
+                <button class="btn" id="start-btn">START GAME</button>
+                
+                <p class="trump-quote">"We will have so much winning, you're going to get tired of winning!"</p>
+            </div>
+            
+            <div class="screen hidden" id="game-over-screen">
+                <h2>MISSION FAILED!</h2>
+                <p>President Tronmp fell into international waters! The global media is having a field day with this one.</p>
+                
+                <div class="game-over-stats">
+                    <p>Final Score: <span id="final-score">0</span></p>
+                    <p>Countries Visited: <span id="final-countries">0</span></p>
+                    <p>Highest Level: <span id="final-level">1</span></p>
+                </div>
+                
+                <button class="btn" id="restart-btn">PLAY AGAIN</button>
+                
+                <p class="trump-quote">"This game is a fictional parody. All characters are fictional and not associated with any real person"</p>
+            </div>
+            
+            <div class="mobile-controls">
+                <div class="controller-frame">
+                    <div class="d-pad">
+                        <div class="d-pad-up d-pad-btn">↑</div>
+                        <div class="d-pad-left d-pad-btn">←</div>
+                        <div class="d-pad-center d-pad-btn"></div>
+                        <div class="d-pad-right d-pad-btn">→</div>
+                        <div class="d-pad-down d-pad-btn">↓</div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <div class="action-btn" id="mobile-jump"><span>A</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio elements -->
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="jump-sound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="land-sound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-03.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="gameover-sound">
+        <source src="https://www.soundjay.com/misc/sounds/fail-trombone-03.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="powerup-sound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-02.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="news-sound">
+        <source src="https://www.soundjay.com/misc/sounds/breaking-news.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Game elements
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const startScreen = document.getElementById('start-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const scoreEl = document.getElementById('score');
+        const countriesEl = document.getElementById('countries');
+        const levelEl = document.getElementById('level');
+        const finalScoreEl = document.getElementById('final-score');
+        const finalCountriesEl = document.getElementById('final-countries');
+        const finalLevelEl = document.getElementById('final-level');
+        const messageEl = document.getElementById('message');
+        const flagEl = document.querySelector('.country-flag span');
+        const flagBox = document.getElementById('current-flag');
+        const mobileLeftBtn = document.querySelector('.d-pad-left');
+        const mobileRightBtn = document.querySelector('.d-pad-right');
+        const mobileJumpBtn = document.getElementById('mobile-jump');
+        const countdownEl = document.getElementById('countdown');
+        const splashEffect = document.getElementById('splash-effect');
+        const tutorialDesktop = document.getElementById('tutorial-desktop');
+        const tutorialMobile = document.getElementById('tutorial-mobile');
+        const gameArea = document.querySelector('.game-area');
+        const energyBar = document.getElementById('energy-bar');
+        const energyValue = document.getElementById('energy-value');
+        const endlessModeBtn = document.getElementById('endless-mode');
+        const timeAttackBtn = document.getElementById('time-attack');
+        const breakingNews = document.getElementById('breaking-news');
+        const newsContent = document.getElementById('news-content');
+        const newsSound = document.getElementById('news-sound');
+        
+        // Audio elements
+        const bgMusic = document.getElementById('bg-music');
+        const jumpSound = document.getElementById('jump-sound');
+        const landSound = document.getElementById('land-sound');
+        const gameoverSound = document.getElementById('gameover-sound');
+        const powerupSound = document.getElementById('powerup-sound');
+        
+        // Set canvas dimensions
+        function resizeCanvas() {
+            const gameArea = document.querySelector('.game-area');
+            canvas.width = gameArea.clientWidth;
+            canvas.height = gameArea.clientHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        // Game state
+        let gameRunning = false;
+        let score = 0;
+        let countriesVisited = 0;
+        let level = 1;
+        let visitedCountries = new Set();
+        let currentCountry = "USA";
+        let speed = 1.5;
+        let messageTimeout = null;
+        let leftPressed = false;
+        let rightPressed = false;
+        let gameStartTime = 0;
+        let countdownActive = false;
+        let gamePaused = false;
+        let tutorialShown = false;
+        let energy = 100;
+        let gameMode = 'endless'; // 'endless' or 'timeattack'
+        let timeLeft = 120; // 2 minutes for time attack
+        let powerups = [];
+        let enemies = [];
+        let playerAngle = 0;
+        let fallAnimation = false;
+        let jetpackActive = false;
+        let jetpackTime = 0;
+        
+        // Player object
+        const player = {
+            x: 400,
+            y: 400,
+            width: 50,
+            height: 60,
+            velocityX: 0,
+            velocityY: 0,
+            jumping: false,
+            moveSpeed: 6,
+            jumpPower: 15,
+            gravity: 0.7
+        };
+        
+        // Create Trump image with canvas
+        function createTrumpImage() {
+            const trumpCanvas = document.createElement('canvas');
+            trumpCanvas.width = 60;
+            trumpCanvas.height = 80;
+            const tctx = trumpCanvas.getContext('2d');
+            
+            // Body (suit)
+            tctx.fillStyle = '#1C3F95';
+            tctx.fillRect(10, 20, 40, 50);
+            
+            // White shirt
+            tctx.fillStyle = '#FFFFFF';
+            tctx.fillRect(15, 25, 30, 25);
+            
+            // Head
+            tctx.fillStyle = '#FFD9B3';
+            tctx.beginPath();
+            tctx.arc(30, 15, 15, 0, Math.PI * 2);
+            tctx.fill();
+            
+            // Hair
+            tctx.fillStyle = '#FFD700';
+            tctx.beginPath();
+            tctx.moveTo(10, 10);
+            tctx.lineTo(20, 5);
+            tctx.lineTo(30, 5);
+            tctx.lineTo(40, 8);
+            tctx.lineTo(50, 5);
+            tctx.lineTo(50, 15);
+            tctx.lineTo(10, 15);
+            tctx.closePath();
+            tctx.fill();
+            
+            // Overcomb hair
+            tctx.fillStyle = '#FFB300';
+            tctx.beginPath();
+            tctx.moveTo(25, 5);
+            tctx.lineTo(35, 5);
+            tctx.lineTo(45, 10);
+            tctx.lineTo(40, 12);
+            tctx.lineTo(30, 8);
+            tctx.lineTo(25, 8);
+            tctx.closePath();
+            tctx.fill();
+            
+            // Face details
+            tctx.fillStyle = '#000000';
+            // Eyes
+            tctx.beginPath();
+            tctx.arc(23, 12, 2, 0, Math.PI * 2);
+            tctx.fill();
+            tctx.beginPath();
+            tctx.arc(37, 12, 2, 0, Math.PI * 2);
+            tctx.fill();
+            
+            // Mouth
+            tctx.beginPath();
+            tctx.moveTo(25, 20);
+            tctx.lineTo(35, 20);
+            tctx.stroke();
+            
+            // Red tie
+            tctx.fillStyle = '#E41E26';
+            tctx.beginPath();
+            tctx.moveTo(30, 30);
+            tctx.lineTo(20, 50);
+            tctx.lineTo(40, 50);
+            tctx.closePath();
+            tctx.fill();
+            
+            // Tie details
+            tctx.fillStyle = '#FFFFFF';
+            tctx.beginPath();
+            tctx.moveTo(30, 35);
+            tctx.lineTo(25, 45);
+            tctx.lineTo(30, 45);
+            tctx.closePath();
+            tctx.fill();
+            
+            // Arms and legs
+            tctx.fillStyle = '#1C3F95';
+            // Left arm
+            tctx.fillRect(5, 35, 5, 25);
+            // Right arm
+            tctx.fillRect(50, 35, 5, 25);
+            // Left leg
+            tctx.fillRect(20, 70, 8, 25);
+            // Right leg
+            tctx.fillRect(32, 70, 8, 25);
+            
+            return trumpCanvas;
+        }
+        
+        const trumpImg = createTrumpImage();
+        
+        // Create Trump with jetpack
+        function createTrumpJetpackImage() {
+            const trumpCanvas = document.createElement('canvas');
+            trumpCanvas.width = 60;
+            trumpCanvas.height = 80;
+            const tctx = trumpCanvas.getContext('2d');
+            
+            // Jetpack flames
+            tctx.fillStyle = '#FF4500';
+            tctx.beginPath();
+            tctx.moveTo(15, 70);
+            tctx.lineTo(25, 90);
+            tctx.lineTo(35, 70);
+            tctx.fill();
+            
+            tctx.fillStyle = '#FFD700';
+            tctx.beginPath();
+            tctx.moveTo(20, 70);
+            tctx.lineTo(25, 85);
+            tctx.lineTo(30, 70);
+            tctx.fill();
+            
+            // Jetpack
+            tctx.fillStyle = '#333333';
+            tctx.fillRect(20, 50, 10, 20);
+            tctx.fillRect(15, 45, 20, 5);
+            
+            // Body (suit)
+            tctx.fillStyle = '#1C3F95';
+            tctx.fillRect(10, 20, 40, 50);
+            
+            // White shirt
+            tctx.fillStyle = '#FFFFFF';
+            tctx.fillRect(15, 25, 30, 25);
+            
+            // Head
+            tctx.fillStyle = '#FFD9B3';
+            tctx.beginPath();
+            tctx.arc(30, 15, 15, 0, Math.PI * 2);
+            tctx.fill();
+            
+            // Hair
+            tctx.fillStyle = '#FFD700';
+            tctx.beginPath();
+            tctx.moveTo(10, 10);
+            tctx.lineTo(20, 5);
+            tctx.lineTo(30, 5);
+            tctx.lineTo(40, 8);
+            tctx.lineTo(50, 5);
+            tctx.lineTo(50, 15);
+            tctx.lineTo(10, 15);
+            tctx.closePath();
+            tctx.fill();
+            
+            // Overcomb hair
+            tctx.fillStyle = '#FFB300';
+            tctx.beginPath();
+            tctx.moveTo(25, 5);
+            tctx.lineTo(35, 5);
+            tctx.lineTo(45, 10);
+            tctx.lineTo(40, 12);
+            tctx.lineTo(30, 8);
+            tctx.lineTo(25, 8);
+            tctx.closePath();
+            tctx.fill();
+            
+            // Face details
+            tctx.fillStyle = '#000000';
+            // Eyes
+            tctx.beginPath();
+            tctx.arc(23, 12, 2, 0, Math.PI * 2);
+            tctx.fill();
+            tctx.beginPath();
+            tctx.arc(37, 12, 2, 0, Math.PI * 2);
+            tctx.fill();
+            
+            // Mouth
+            tctx.beginPath();
+            tctx.moveTo(25, 20);
+            tctx.lineTo(35, 20);
+            tctx.stroke();
+            
+            // Red tie
+            tctx.fillStyle = '#E41E26';
+            tctx.beginPath();
+            tctx.moveTo(30, 30);
+            tctx.lineTo(20, 50);
+            tctx.lineTo(40, 50);
+            tctx.closePath();
+            tctx.fill();
+            
+            // Tie details
+            tctx.fillStyle = '#FFFFFF';
+            tctx.beginPath();
+            tctx.moveTo(30, 35);
+            tctx.lineTo(25, 45);
+            tctx.lineTo(30, 45);
+            tctx.closePath();
+            tctx.fill();
+            
+            // Arms and legs
+            tctx.fillStyle = '#1C3F95';
+            // Left arm
+            tctx.fillRect(5, 35, 5, 25);
+            // Right arm
+            tctx.fillRect(50, 35, 5, 25);
+            // Left leg
+            tctx.fillRect(20, 70, 8, 25);
+            // Right leg
+            tctx.fillRect(32, 70, 8, 25);
+            
+            return trumpCanvas;
+        }
+        
+        const trumpJetpackImg = createTrumpJetpackImage();
+        
+        // Countries data with flag colors
+        const countries = [
+            { 
+                name: "USA", 
+                colors: ["#B22234", "#FFFFFF", "#3C3B6E"],
+                drawFlag: function(ctx, x, y, width, height) {
+                    // Red stripes
+                    ctx.fillStyle = this.colors[0];
+                    ctx.fillRect(x, y, width, height/3);
+                    ctx.fillRect(x, y + height*2/3, width, height/3);
+                    
+                    // Blue field
+                    ctx.fillStyle = this.colors[2];
+                    ctx.fillRect(x, y, width*2/5, height*7/13);
+                }
+            },
+            { 
+                name: "Russia", 
+                colors: ["#FFFFFF", "#0039A6", "#D52B1E"],
+                drawFlag: function(ctx, x, y, width, height) {
+                    const partHeight = height / 3;
+                    ctx.fillStyle = this.colors[0];
+                    ctx.fillRect(x, y, width, partHeight);
+                    ctx.fillStyle = this.colors[1];
+                    ctx.fillRect(x, y + partHeight, width, partHeight);
+                    ctx.fillStyle = this.colors[2];
+                    ctx.fillRect(x, y + partHeight*2, width, partHeight);
+                }
+            },
+            { 
+                name: "China", 
+                colors: ["#DE2910", "#FFDE00"],
+                drawFlag: function(ctx, x, y, width, height) {
+                    ctx.fillStyle = this.colors[0];
+                    ctx.fillRect(x, y, width, height);
+                    
+                    // Big star
+                    ctx.fillStyle = this.colors[1];
+                    drawStar(ctx, x + width*0.3, y + height*0.3, 8, 5);
+                    
+                    // Small stars
+                    drawStar(ctx, x + width*0.5, y + height*0.2, 3, 5);
+                    drawStar(ctx, x + width*0.55, y + height*0.35, 3, 5);
+                    drawStar(ctx, x + width*0.5, y + height*0.5, 3, 5);
+                    drawStar(ctx, x + width*0.4, y + height*0.4, 3, 5);
+                }
+            },
+            { 
+                name: "UK", 
+                colors: ["#012169", "#FFFFFF", "#C8102E"],
+                drawFlag: function(ctx, x, y, width, height) {
+                    ctx.fillStyle = this.colors[0];
+                    ctx.fillRect(x, y, width, height);
+                    
+                    // White diagonals
+                    ctx.strokeStyle = this.colors[1];
+                    ctx.lineWidth = height/5;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + width, y + height);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(x + width, y);
+                    ctx.lineTo(x, y + height);
+                    ctx.stroke();
+                    
+                    // Red diagonals
+                    ctx.strokeStyle = this.colors[2];
+                    ctx.lineWidth = height/10;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + width, y + height);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(x + width, y);
+                    ctx.lineTo(x, y + height);
+                    ctx.stroke();
+                }
+            },
+            { 
+                name: "France", 
+                colors: ["#0055A4", "#FFFFFF", "#EF4135"],
+                drawFlag: function(ctx, x, y, width, height) {
+                    const partWidth = width / 3;
+                    ctx.fillStyle = this.colors[0];
+                    ctx.fillRect(x, y, partWidth, height);
+                    ctx.fillStyle = this.colors[1];
+                    ctx.fillRect(x + partWidth, y, partWidth, height);
+                    ctx.fillStyle = this.colors[2];
+                    ctx.fillRect(x + partWidth*2, y, partWidth, height);
+                }
+            },
+            { 
+                name: "Germany", 
+                colors: ["#000000", "#DD0000", "#FFCE00"],
+                drawFlag: function(ctx, x, y, width, height) {
+                    const partHeight = height / 3;
+                    ctx.fillStyle = this.colors[0];
+                    ctx.fillRect(x, y, width, partHeight);
+                    ctx.fillStyle = this.colors[1];
+                    ctx.fillRect(x, y + partHeight, width, partHeight);
+                    ctx.fillStyle = this.colors[2];
+                    ctx.fillRect(x, y + partHeight*2, width, partHeight);
+                }
+            },
+            { 
+                name: "Japan", 
+                colors: ["#FFFFFF", "#BC002D"],
+                drawFlag: function(ctx, x, y, width, height) {
+                    ctx.fillStyle = this.colors[0];
+                    ctx.fillRect(x, y, width, height);
+                    ctx.fillStyle = this.colors[1];
+                    ctx.beginPath();
+                    ctx.arc(x + width/2, y + height/2, height/4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            },
+            { 
+                name: "Brazil", 
+                colors: ["#009739", "#FEDD00", "#012169"],
+                drawFlag: function(ctx, x, y, width, height) {
+                    ctx.fillStyle = this.colors[0];
+                    ctx.fillRect(x, y, width, height);
+                    
+                    // Diamond
+                    ctx.fillStyle = this.colors[1];
+                    ctx.beginPath();
+                    ctx.moveTo(x + width/2, y);
+                    ctx.lineTo(x + width, y + height/2);
+                    ctx.lineTo(x + width/2, y + height);
+                    ctx.lineTo(x, y + height/2);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Circle
+                    ctx.fillStyle = this.colors[2];
+                    ctx.beginPath();
+                    ctx.arc(x + width/2, y + height/2, height/4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        ];
+        
+        // Helper function to draw a star
+        function drawStar(ctx, cx, cy, spikes, outerRadius) {
+            const innerRadius = outerRadius / 2;
+            let rot = Math.PI / 2 * 3;
+            let x = cx;
+            let y = cy;
+            let step = Math.PI / spikes;
+            
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - outerRadius);
+            
+            for (let i = 0; i < spikes; i++) {
+                x = cx + Math.cos(rot) * outerRadius;
+                y = cy + Math.sin(rot) * outerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+                
+                x = cx + Math.cos(rot) * innerRadius;
+                y = cy + Math.sin(rot) * innerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+            }
+            
+            ctx.lineTo(cx, cy - outerRadius);
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        // Platforms (countries)
+        let platforms = [];
+        
+        // Clouds
+        let clouds = [];
+        
+        // Create initial clouds
+        for (let i = 0; i < 8; i++) {
+            clouds.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * 200,
+                width: 60 + Math.random() * 80,
+                height: 30 + Math.random() * 30,
+                speed: 0.2 + Math.random() * 0.5
+            });
+        }
+        
+        // Create initial platforms
+        function createPlatforms() {
+            platforms = [];
+            
+            // Starting platform - wider and at the bottom
+            platforms.push({
+                x: canvas.width/2 - 100,
+                y: canvas.height - 80,
+                width: 200,
+                height: 20,
+                country: countries[0]
+            });
+            
+            // Generate more platforms - spaced closer together
+            for (let i = 0; i < 12; i++) {
+                platforms.push({
+                    x: Math.random() * (canvas.width - 120),
+                    y: canvas.height - 150 - (i * 70),
+                    width: 100 + Math.random() * 80,
+                    height: 20,
+                    country: countries[Math.floor(Math.random() * countries.length)]
+                });
+            }
+        }
+        
+        // Update flag display
+        function updateFlagDisplay(country) {
+            // Create a mini canvas for the flag
+            const flagCanvas = document.createElement('canvas');
+            flagCanvas.width = 40;
+            flagCanvas.height = 25;
+            const flagCtx = flagCanvas.getContext('2d');
+            
+            // Draw the flag
+            country.drawFlag(flagCtx, 0, 0, 40, 25);
+            
+            // Set as background
+            flagBox.style.backgroundImage = `url(${flagCanvas.toDataURL()})`;
+        }
+        
+        // Draw player (Trump)
+        function drawPlayer() {
+            if (jetpackActive) {
+                ctx.save();
+                ctx.translate(player.x + player.width/2, player.y + player.height/2);
+                ctx.rotate(playerAngle);
+                ctx.drawImage(trumpJetpackImg, -player.width/2, -player.height/2 - 10, player.width, player.height + 10);
+                ctx.restore();
+            } else if (fallAnimation) {
+                ctx.save();
+                ctx.translate(player.x + player.width/2, player.y + player.height/2);
+                ctx.rotate(playerAngle);
+                ctx.drawImage(trumpImg, -player.width/2, -player.height/2 - 10, player.width, player.height + 10);
+                ctx.restore();
+            } else {
+                ctx.drawImage(trumpImg, player.x, player.y - 10, player.width, player.height + 10);
+            }
+        }
+        
+        // Draw platforms with flag designs
+        function drawPlatforms() {
+            platforms.forEach(platform => {
+                const flag = platform.country;
+                
+                // Platform base
+                ctx.fillStyle = '#8B4513';
+                ctx.fillRect(platform.x - 5, platform.y + platform.height, platform.width + 10, 10);
+                
+                // Draw the flag
+                flag.drawFlag(ctx, platform.x, platform.y, platform.width, platform.height);
+                
+                // Country name label
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(flag.name, platform.x + platform.width/2, platform.y - 5);
+            });
+        }
+        
+        // Draw clouds
+        function drawClouds() {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            clouds.forEach(cloud => {
+                ctx.beginPath();
+                ctx.arc(cloud.x, cloud.y, cloud.width/4, 0, Math.PI * 2);
+                ctx.arc(cloud.x + cloud.width/4, cloud.y - cloud.height/4, cloud.width/5, 0, Math.PI * 2);
+                ctx.arc(cloud.x + cloud.width/3, cloud.y, cloud.width/4, 0, Math.PI * 2);
+                ctx.arc(cloud.x - cloud.width/4, cloud.y, cloud.width/5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+        
+        // Draw water at bottom
+        function drawWater() {
+            ctx.fillStyle = 'rgba(30, 144, 255, 0.7)';
+            ctx.fillRect(0, canvas.height - 10, canvas.width, 10);
+            
+            // Animated waves
+            ctx.fillStyle = 'rgba(100, 181, 246, 0.8)';
+            const waveOffset = (Date.now() / 100) % 80;
+            for (let i = -1; i < 12; i++) {
+                ctx.beginPath();
+                ctx.arc(i * 80 + waveOffset, canvas.height - 10, 15, Math.PI, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        // Draw power-ups
+        function drawPowerups() {
+            powerups.forEach(powerup => {
+                ctx.save();
+                ctx.translate(powerup.x, powerup.y);
+                
+                // Draw different types of power-ups
+                switch(powerup.type) {
+                    case 'energy':
+                        ctx.fillStyle = '#00FF00';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = 'white';
+                        ctx.font = 'bold 12px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('E', 0, 0);
+                        break;
+                    case 'jetpack':
+                        ctx.fillStyle = '#FFD700';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = 'white';
+                        ctx.font = 'bold 12px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('J', 0, 0);
+                        break;
+                    case 'speed':
+                        ctx.fillStyle = '#FF4500';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = 'white';
+                        ctx.font = 'bold 12px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('S', 0, 0);
+                        break;
+                }
+                
+                ctx.restore();
+            });
+        }
+        
+        // Draw enemies
+        function drawEnemies() {
+            enemies.forEach(enemy => {
+                ctx.fillStyle = '#FF0000';
+                ctx.beginPath();
+                ctx.moveTo(enemy.x, enemy.y);
+                ctx.lineTo(enemy.x - 15, enemy.y + 30);
+                ctx.lineTo(enemy.x + 15, enemy.y + 30);
+                ctx.closePath();
+                ctx.fill();
+            });
+        }
+        
+        // Show message
+        function showMessage(text) {
+            messageEl.textContent = text;
+            messageEl.style.display = 'block';
+            
+            if (messageTimeout) clearTimeout(messageTimeout);
+            messageTimeout = setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 2000);
+        }
+        
+        // Update energy bar
+        function updateEnergy(value) {
+            energy = Math.max(0, Math.min(100, value));
+            energyBar.style.width = energy + '%';
+            energyValue.textContent = Math.round(energy);
+            
+            // Change color based on energy level
+            if (energy > 70) {
+                energyBar.style.background = 'linear-gradient(to right, #a8dadc, #457b9d)';
+            } else if (energy > 30) {
+                energyBar.style.background = 'linear-gradient(to right, #ff9e00, #ffd700)';
+            } else {
+                energyBar.style.background = 'linear-gradient(to right, #e63946, #b21f1f)';
+            }
+        }
+        
+        // Start countdown before game begins
+        function startCountdown() {
+            let count = 3;
+            countdownEl.textContent = count;
+            countdownEl.style.display = 'block';
+            countdownActive = true;
+            
+            const countdownInterval = setInterval(() => {
+                count--;
+                if (count === 0) {
+                    countdownEl.textContent = "GO!";
+                    setTimeout(() => {
+                        countdownEl.style.display = 'none';
+                        countdownActive = false;
+                        
+                        // Show tutorial message
+                        showTutorial();
+                        
+                        // Pause briefly before starting
+                        setTimeout(() => {
+                            gameRunning = true;
+                            gamePaused = false;
+                            update();
+                        }, 1000);
+                    }, 500);
+                    clearInterval(countdownInterval);
+                } else {
+                    countdownEl.textContent = count;
+                }
+            }, 1000);
+        }
+        
+        // Show tutorial messages
+        function showTutorial() {
+            tutorialShown = true;
+            
+            // Show appropriate tutorial message
+            if (window.innerWidth < 768) {
+                tutorialMobile.style.display = 'block';
+            } else {
+                tutorialDesktop.style.display = 'block';
+            }
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                tutorialDesktop.style.display = 'none';
+                tutorialMobile.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Game over animation
+        function playGameOverAnimation() {
+            // Play game over sound
+            gameoverSound.play();
+            
+            // Add screen shake effect
+            gameArea.classList.add('shake');
+            
+            // Show splash effect
+            splashEffect.style.display = 'block';
+            
+            // Hide after animation
+            setTimeout(() => {
+                splashEffect.style.display = 'none';
+                gameArea.classList.remove('shake');
+                gameOverScreen.classList.remove('hidden');
+            }, 1500);
+        }
+        
+        // Spawn power-up
+        function spawnPowerup() {
+            if (Math.random() < 0.01 && platforms.length > 0) {
+                const platform = platforms[Math.floor(Math.random() * platforms.length)];
+                const types = ['energy', 'jetpack', 'speed'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                
+                powerups.push({
+                    x: platform.x + platform.width/2,
+                    y: platform.y - 20,
+                    width: 30,
+                    height: 30,
+                    type: type
+                });
+            }
+        }
+        
+        // Spawn enemy
+        function spawnEnemy() {
+            if (Math.random() < 0.005 && platforms.length > 0) {
+                const platform = platforms[Math.floor(Math.random() * platforms.length)];
+                
+                enemies.push({
+                    x: platform.x + platform.width/2,
+                    y: platform.y - 20,
+                    width: 30,
+                    height: 30,
+                    direction: Math.random() > 0.5 ? 1 : -1,
+                    speed: 2
+                });
+            }
+        }
+        
+        // Show breaking news for a country
+        function showBreakingNews(country) {
+            // Play breaking news sound
+            newsSound.currentTime = 0;
+            newsSound.play();
+            
+            // Get news headline for this country
+            const headline = getNewsForCountry(country);
+            
+            // Update content and show banner
+            newsContent.textContent = headline;
+            breakingNews.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                breakingNews.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Simulated news headlines for each country
+        function getNewsForCountry(country) {
+            const headlines = {
+                "USA": [
+                    "Trump declares 'We're going to have so much winning!' in USA",
+                    "President Trump promises to build wall around USA",
+                    "Trump signs executive order for 'biggest tax cuts ever'"
+                ],
+                "Russia": [
+                    "Trump meets Putin in Moscow, calls it 'a beautiful relationship'",
+                    "Trump praises Russian leadership: 'Nobody has been tougher to Russia than me!'",
+                    "Trump visits Kremlin, discusses 'new era of cooperation'"
+                ],
+                "China": [
+                    "Trump negotiates trade deal with China: 'The best deal ever!'",
+                    "President Trump praises Chinese infrastructure: 'They build things so fast!'",
+                    "Trump meets Chinese leader: 'We're going to make a lot of progress'"
+                ],
+                "UK": [
+                    "Trump visits London, meets with the Queen",
+                    "Trump calls UK 'a very special place' during state visit",
+                    "President Trump praises Brexit: 'The people have spoken!'"
+                ],
+                "France": [
+                    "Trump attends Bastille Day parade in Paris",
+                    "President Trump meets Macron: 'We have a great relationship'",
+                    "Trump visits Eiffel Tower, calls it 'a beautiful structure'"
+                ],
+                "Germany": [
+                    "Trump in Berlin: 'We need fair trade with Germany'",
+                    "President Trump meets Merkel, discusses NATO funding",
+                    "Trump visits Berlin Wall: 'We need walls, folks, they work!'"
+                ],
+                "Japan": [
+                    "Trump plays golf with Japanese Prime Minister",
+                    "President Trump visits Tokyo: 'Japan is a great ally'",
+                    "Trump eats sushi with Japanese leader: 'The best sushi, believe me!'"
+                ],
+                "Brazil": [
+                    "Trump visits Amazon rainforest: 'It's huge, really huge!'",
+                    "President Trump meets Brazilian president: 'We're going to do big things'",
+                    "Trump in Rio: 'The Olympics were great, but mine will be better'"
+                ]
+            };
+            
+            // Return a random headline for the country
+            const countryHeadlines = headlines[country] || [
+                `Trump visits ${country}: 'It's a beautiful place, really beautiful!'`
+            ];
+            
+            return countryHeadlines[Math.floor(Math.random() * countryHeadlines.length)];
+        }
+        
+        // Update game state
+        function update() {
+            if (!gameRunning || countdownActive || gamePaused) return;
+            
+            // Apply gravity if not using jetpack
+            if (!jetpackActive) {
+                player.velocityY += player.gravity;
+            }
+            
+            // Update player position based on pressed keys
+            if (leftPressed) player.velocityX = -player.moveSpeed;
+            else if (rightPressed) player.velocityX = player.moveSpeed;
+            else player.velocityX = 0;
+            
+            player.x += player.velocityX;
+            player.y += player.velocityY;
+            
+            // Update jetpack timer
+            if (jetpackActive) {
+                jetpackTime--;
+                if (jetpackTime <= 0) {
+                    jetpackActive = false;
+                    showMessage("Jetpack expired!");
+                }
+            }
+            
+            // Boundary checks
+            if (player.x < 0) player.x = 0;
+            if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+            
+            // Platform collision
+            let onPlatform = false;
+            platforms.forEach(platform => {
+                if (player.x + player.width > platform.x && 
+                    player.x < platform.x + platform.width &&
+                    player.y + player.height > platform.y &&
+                    player.y + player.height < platform.y + platform.height + 10 &&
+                    player.velocityY > 0) {
+                    
+                    player.y = platform.y - player.height;
+                    player.velocityY = 0;
+                    player.jumping = false;
+                    onPlatform = true;
+                    
+                    // Update country
+                    if (platform.country.name !== currentCountry) {
+                        currentCountry = platform.country.name;
+                        flagEl.textContent = currentCountry;
+                        updateFlagDisplay(platform.country);
+                        
+                        // Add to visited countries
+                        if (!visitedCountries.has(currentCountry)) {
+                            visitedCountries.add(currentCountry);
+                            countriesVisited++;
+                            countriesEl.textContent = countriesVisited;
+                            score += 100;
+                            scoreEl.textContent = score;
+                            showMessage(`Arrived in ${currentCountry}! +100 points!`);
+                            landSound.play();
+                            
+                            // Show breaking news for this country
+                            showBreakingNews(currentCountry);
+                        }
+                    }
+                }
+            });
+            
+            // Check if player fell in water
+            if (player.y > canvas.height - player.height) {
+                fallAnimation = true;
+                playerAngle = Math.PI / 2;
+                setTimeout(() => {
+                    gameOver();
+                }, 500);
+                return;
+            }
+            
+            // Move platforms down to simulate scrolling
+            platforms.forEach(platform => {
+                platform.y += speed;
+                
+                // Remove platforms that go off screen
+                if (platform.y > canvas.height) {
+                    platform.y = -20;
+                    platform.x = Math.random() * (canvas.width - 100);
+                    platform.country = countries[Math.floor(Math.random() * countries.length)];
+                    platform.width = 100 + Math.random() * 80;
+                    
+                    // Add score for platform passed
+                    score += 10;
+                    scoreEl.textContent = score;
+                }
+            });
+            
+            // Move clouds
+            clouds.forEach(cloud => {
+                cloud.x -= cloud.speed;
+                if (cloud.x < -cloud.width) {
+                    cloud.x = canvas.width + cloud.width;
+                    cloud.y = Math.random() * 200;
+                }
+            });
+            
+            // Move enemies
+            enemies.forEach(enemy => {
+                enemy.x += enemy.speed * enemy.direction;
+                
+                // Reverse direction if hitting platform edge
+                if (enemy.x < 0 || enemy.x > canvas.width) {
+                    enemy.direction *= -1;
+                }
+            });
+            
+            // Update power-ups
+            powerups.forEach((powerup, index) => {
+                // Check collision with player
+                if (Math.abs(player.x + player.width/2 - powerup.x) < 30 &&
+                    Math.abs(player.y + player.height/2 - powerup.y) < 30) {
+                    
+                    powerupSound.play();
+                    showMessage("Power-up collected!");
+                    
+                    // Apply power-up effect
+                    switch(powerup.type) {
+                        case 'energy':
+                            updateEnergy(energy + 30);
+                            break;
+                        case 'jetpack':
+                            jetpackActive = true;
+                            jetpackTime = 300;
+                            showMessage("Jetpack activated!");
+                            break;
+                        case 'speed':
+                            speed += 1;
+                            showMessage("Speed boost!");
+                            break;
+                    }
+                    
+                    // Remove power-up
+                    powerups.splice(index, 1);
+                }
+            });
+            
+            // Check enemy collision
+            enemies.forEach(enemy => {
+                if (Math.abs(player.x + player.width/2 - enemy.x) < 30 &&
+                    Math.abs(player.y + player.height/2 - enemy.y) < 30) {
+                    
+                    updateEnergy(energy - 20);
+                    showMessage("Ouch! Hit by enemy!");
+                    
+                    if (energy <= 0) {
+                        gameOver();
+                        return;
+                    }
+                }
+            });
+            
+            // Spawn power-ups and enemies
+            spawnPowerup();
+            spawnEnemy();
+            
+            // Deplete energy over time
+            updateEnergy(energy - 0.1);
+            
+            // Increase speed over time - slower increase
+            if (Math.random() < 0.003) {
+                speed += 0.05;
+                level++;
+                levelEl.textContent = level;
+                showMessage(`Level Up! Speed increased!`);
+            }
+            
+            // Draw everything
+            render();
+            
+            // Continue game loop
+            requestAnimationFrame(update);
+        }
+        
+        // Render game
+        function render() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Sky gradient
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGradient.addColorStop(0, '#64B5F6');
+            skyGradient.addColorStop(1, '#BBDEFB');
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Sun
+            ctx.fillStyle = '#FFEB3B';
+            ctx.beginPath();
+            ctx.arc(canvas.width - 80, 80, 40, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw game elements
+            drawClouds();
+            drawPlatforms();
+            drawPowerups();
+            drawEnemies();
+            drawPlayer();
+            drawWater();
+        }
+        
+        // Start the game
+        function startGame() {
+            // Play background music
+            bgMusic.volume = 0.3;
+            bgMusic.play();
+            
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            score = 0;
+            countriesVisited = 1;
+            level = 1;
+            visitedCountries.clear();
+            visitedCountries.add("USA");
+            speed = 1.5;
+            player.x = canvas.width/2 - player.width/2;
+            player.y = canvas.height - 140; // Start safely above the platform
+            player.velocityX = 0;
+            player.velocityY = 0;
+            scoreEl.textContent = score;
+            countriesEl.textContent = countriesVisited;
+            levelEl.textContent = level;
+            currentCountry = "USA";
+            flagEl.textContent = currentCountry;
+            updateFlagDisplay(countries[0]);
+            updateEnergy(100);
+            createPlatforms();
+            powerups = [];
+            enemies = [];
+            fallAnimation = false;
+            playerAngle = 0;
+            jetpackActive = false;
+            
+            // Show get ready message and start countdown
+            showMessage("Get Ready!");
+            gamePaused = true;
+            startCountdown();
+        }
+        
+        // Game over
+        function gameOver() {
+            gameRunning = false;
+            bgMusic.pause();
+            finalScoreEl.textContent = score;
+            finalCountriesEl.textContent = countriesVisited;
+            finalLevelEl.textContent = level;
+            playGameOverAnimation();
+        }
+        
+        // Mobile touch controls
+        mobileLeftBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            leftPressed = true;
+        });
+        
+        mobileLeftBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            leftPressed = false;
+        });
+        
+        mobileRightBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            rightPressed = true;
+        });
+        
+        mobileRightBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            rightPressed = false;
+        });
+        
+        mobileJumpBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            if (!player.jumping && gameRunning && !countdownActive && !gamePaused && energy > 5) {
+                player.velocityY = -player.jumpPower;
+                player.jumping = true;
+                jumpSound.play();
+                updateEnergy(energy - 5);
+            }
+        });
+        
+        // Mouse controls for desktop testing
+        mobileLeftBtn.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            leftPressed = true;
+        });
+        
+        mobileLeftBtn.addEventListener('mouseup', function(e) {
+            e.preventDefault();
+            leftPressed = false;
+        });
+        
+        mobileLeftBtn.addEventListener('mouseleave', function(e) {
+            e.preventDefault();
+            leftPressed = false;
+        });
+        
+        mobileRightBtn.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            rightPressed = true;
+        });
+        
+        mobileRightBtn.addEventListener('mouseup', function(e) {
+            e.preventDefault();
+            rightPressed = false;
+        });
+        
+        mobileRightBtn.addEventListener('mouseleave', function(e) {
+            e.preventDefault();
+            rightPressed = false;
+        });
+        
+        mobileJumpBtn.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            if (!player.jumping && gameRunning && !countdownActive && !gamePaused && energy > 5) {
+                player.velocityY = -player.jumpPower;
+                player.jumping = true;
+                jumpSound.play();
+                updateEnergy(energy - 5);
+            }
+        });
+        
+        // Game mode selection
+        endlessModeBtn.addEventListener('click', function() {
+            gameMode = 'endless';
+            endlessModeBtn.classList.add('active');
+            timeAttackBtn.classList.remove('active');
+        });
+        
+        timeAttackBtn.addEventListener('click', function() {
+            gameMode = 'timeattack';
+            timeAttackBtn.classList.add('active');
+            endlessModeBtn.classList.remove('active');
+        });
+        
+        // Button event listeners
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+        
+        // Initialize
+        createPlatforms();
+        updateFlagDisplay(countries[0]);
+        render();
+        
+        // Show initial news banner
+        setTimeout(() => {
+            showBreakingNews("USA");
+        }, 1000);
+        
+        // Prevent scrolling on touch devices
+        document.body.addEventListener('touchmove', function(e) {
+            if (gameRunning) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Prevent context menu on mobile
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
